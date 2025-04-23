@@ -1,0 +1,10 @@
+/Backend/MiddleWare/venv
+/Backend/Model-service/__pycache__
+/Backend/Model-service/venv
+/frontend/node_modules
+/frontend/node_modules
+/frontend/.pnp
+/frontend/coverage
+
+# production
+/frontend/build
