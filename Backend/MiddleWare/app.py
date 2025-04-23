@@ -1,10 +1,12 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import mysql.connector
 import requests
 import bcrypt
 import datetime
 
 app = Flask(__name__)
+CORS(app)
 
 # MySQL Configuration (connects to Kubernetes service)
 db = mysql.connector.connect(

@@ -1,10 +1,11 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import pickle
 import numpy as np
 from feature_extraction import FeatureExtraction, predict_url
 
 app = Flask(__name__)
-
+CORS(app)
 # Load the pre-trained model
 try:
     with open('/app/model.pkl', 'rb') as file:
