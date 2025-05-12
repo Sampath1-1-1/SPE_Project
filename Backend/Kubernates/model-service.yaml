@@ -17,14 +17,40 @@ spec:
           image: aaradhyaghota/model-service:latest
           ports:
             - containerPort: 5000
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "512Mi"
+            limits:
+              cpu: "400m"
+              memory: "1Gi"
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: model-service
 spec:
-    ports:
-      - port: 5000
-        targetPort: 5000
-    selector:
-      app: model-service
+  ports:
+    - port: 5000
+      targetPort: 5000
+  selector:
+    app: model-service
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: model-service-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: model-service
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
