@@ -26,6 +26,13 @@ spec:
               value: "root"
             - name: MYSQL_DATABASE
               value: "phishing_db"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "200m"
+              memory: "512Mi"
 ---
 apiVersion: v1
 kind: Service
@@ -37,3 +44,22 @@ spec:
       targetPort: 5001
   selector:
     app: middleware
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: middleware-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: middleware
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
