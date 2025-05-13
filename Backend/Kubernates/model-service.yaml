@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: model-service
+  namespace: frontend-environment
 spec:
   selector:
     matchLabels:
@@ -29,6 +30,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: model-service
+  namespace: frontend-environment
 spec:
   ports:
     - port: 5000
@@ -40,6 +42,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: model-service-hpa
+  namespace: frontend-environment
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
