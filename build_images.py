@@ -7,10 +7,10 @@ commands = [
     "docker push aaradhyaghota/middleware:latest",
     "docker push aaradhyaghota/model-service:latest",
     "docker push aaradhyaghota/frontend:latest",
+    "kubectl apply -f /home/aaradhya-ghota/SoftwareProduction/Major_Project_spe/Backend/Kubernates/frontend.yaml",
     "kubectl apply -f /home/aaradhya-ghota/SoftwareProduction/Major_Project_spe/Backend/Kubernates/mysql.yaml",
     "kubectl apply -f /home/aaradhya-ghota/SoftwareProduction/Major_Project_spe/Backend/Kubernates/model-service.yaml",
-    "kubectl apply -f /home/aaradhya-ghota/SoftwareProduction/Major_Project_spe/Backend/Kubernates/middleware.yaml",
-    "kubectl apply -f /home/aaradhya-ghota/SoftwareProduction/Major_Project_spe/frontend/frontend.yaml"
+    "kubectl apply -f /home/aaradhya-ghota/SoftwareProduction/Major_Project_spe/Backend/Kubernates/middleware.yaml"
 ]
 
 for cmd in commands:
