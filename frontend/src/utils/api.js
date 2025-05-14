@@ -22,10 +22,11 @@ export const signupUser = async (username, password, email) => {
         },
         body: JSON.stringify({ username, password, email }),
     });
+    const data = await response.json();
     if (!response.ok) {
-        throw new Error('Signup failed');
+        throw new Error(data.message || 'Login failed');
     }
-    return await response.json();
+    return data;
 };
 
 export const predictUrl = async (url) => {
@@ -43,12 +44,17 @@ export const predictUrl = async (url) => {
 };
 
 export const reportUrl = async (url, prediction, probability) => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const username = user ? user.username : null; // Get the logged-in username
+    if (!username) {
+        throw new Error('User not logged in');
+    }
     const response = await fetch(`${API_URL}/report`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ url, prediction, probability }),
+        body: JSON.stringify({ url, prediction, probability, username }),
     });
     if (!response.ok) {
         throw new Error('Report failed');
@@ -65,6 +71,24 @@ export const getAllUrls = async () => {
     });
     if (!response.ok) {
         throw new Error('Failed to fetch URLs');
+    }
+    return await response.json();
+};
+
+export const getUserUrls = async (username) => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const requestingUser = user ? user.username : null;
+    if (!requestingUser) {
+        throw new Error('User not logged in');
+    }
+    const response = await fetch(`${API_URL}/user_urls/${username}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    if (!response.ok) {
+        throw new Error('Failed to fetch user URLs');
     }
     return await response.json();
 };
