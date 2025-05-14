@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { predictUrl, reportUrl } from '../utils/api';
+import { AuthContext } from '../hooks/useAuth';
 
 const Report = () => {
     const [url, setUrl] = useState('');
     const [result, setResult] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const { user } = useContext(AuthContext);
 
     const handleReport = async (e) => {
         e.preventDefault();
@@ -19,7 +21,7 @@ const Report = () => {
             const predictData = await predictUrl(url);
             const { result: predResult, prediction } = predictData;
             const probability = parseFloat(prediction.match(/[\d.]+/)[0]) / 100;
-            await reportUrl(url, predResult, probability);
+            await reportUrl(url, predResult, probability, user.username);
             setResult({ url, prediction: predResult, probability });
         } catch (err) {
             setError('Failed to report URL');
