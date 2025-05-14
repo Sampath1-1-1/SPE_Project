@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../hooks/useAuth';
-import { getAllUrls } from '../utils/api';
+import { getUserUrls } from '../utils/api';
 
 const Dashboard = () => {
     const { user } = useContext(AuthContext);
@@ -11,7 +11,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchReports = async () => {
             try {
-                const data = await getAllUrls();
+                const data = await getUserUrls(user.username);
                 setReports(data);
             } catch (err) {
                 setError('Failed to fetch reports');
@@ -20,7 +20,7 @@ const Dashboard = () => {
             }
         };
         fetchReports();
-    }, []);
+    }, [user.username]);
 
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-4">
