@@ -3,7 +3,7 @@ import { predictUrl } from '../utils/api';
 
 const Home = () => {
     const [url, setUrl] = useState('');
-    const [result, setResult] = useState(null);
+    const [prediction, setPrediction] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -17,7 +17,7 @@ const Home = () => {
         setError('');
         try {
             const data = await predictUrl(url);
-            setResult(data);
+            setPrediction(data);
         } catch (err) {
             setError('Failed to get prediction');
         } finally {
@@ -46,11 +46,11 @@ const Home = () => {
                         {loading ? 'Checking...' : 'Check URL'}
                     </button>
                 </form>
-                {result && (
+                {prediction && (
                     <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded">
-                        <p className="text-gray-800 dark:text-white"><strong>URL:</strong> {result.url}</p>
-                        <p className="text-gray-800 dark:text-white"><strong>Result:</strong> {result.result}</p>
-                        <p className="text-gray-800 dark:text-white"><strong>Prediction:</strong> {result.prediction}</p>
+                        <p className="text-gray-800 dark:text-white"><strong>URL:</strong> {prediction.url}</p>
+                        <p className="text-gray-800 dark:text-white"><strong>Prediction:</strong> {prediction.result}</p>
+                        <p className="text-gray-800 dark:text-white"><strong>Probability:</strong> {prediction.prediction}</p>
                     </div>
                 )}
             </div>
