@@ -21,7 +21,9 @@ cursor = db.cursor()
 cursor.execute("CREATE DATABASE IF NOT EXISTS phishing_db")
 cursor.execute("USE phishing_db")
 cursor.execute("CREATE TABLE IF NOT EXISTS users (username VARCHAR(255) PRIMARY KEY, password VARCHAR(255), email VARCHAR(255))")
-cursor.execute("CREATE TABLE IF NOT EXISTS reported_urls (id INT AUTO_INCREMENT PRIMARY KEY, url VARCHAR(255), prediction VARCHAR(50), probability FLOAT, reported_at DATETIME)")
+# cursor.execute("CREATE TABLE IF NOT EXISTS reported_urls (id INT AUTO_INCREMENT PRIMARY KEY, url VARCHAR(255), prediction VARCHAR(50), probability FLOAT, reported_at DATETIME)")
+# Modified reported_urls table to include username
+cursor.execute("CREATE TABLE IF NOT EXISTS reported_urls (id INT AUTO_INCREMENT PRIMARY KEY, url VARCHAR(255), prediction VARCHAR(50), probability FLOAT, reported_at DATETIME, username VARCHAR(255), FOREIGN KEY (username) REFERENCES users(username))")
 
 # Login
 @app.route('/login', methods=['POST'])
@@ -32,7 +34,7 @@ def login():
     cursor.execute("SELECT password FROM users WHERE username = %s", (username,))
     result = cursor.fetchone()
     if result and bcrypt.checkpw(password.encode(), result[0].encode()):
-        return jsonify({"message": "Login successful"}), 200
+        return jsonify({"message": "Login successful", "username": username}), 200
     return jsonify({"message": "Invalid credentials"}), 401
 
 # Signup
@@ -65,22 +67,40 @@ def predict():
 # Report URL
 @app.route('/report', methods=['POST'])
 def report():
-    data = request.get_json()
-    url = data.get('url')
-    prediction = data.get('prediction')
-    probability = data.get('probability')
-    reported_at = datetime.datetime.now()
-    cursor.execute("INSERT INTO reported_urls (url, prediction, probability, reported_at) VALUES (%s, %s, %s, %s)",
-                   (url, prediction, probability, reported_at))
-    db.commit()
-    return jsonify({"message": "URL reported"}), 201
+    try:
+        data = request.get_json()
+        url = data.get('url')
+        prediction = data.get('prediction')
+        probability = data.get('probability')
+        username = data.get('username')
+        if not all([url, prediction, probability, username]):
+            return jsonify({"message": "Missing required fields"}), 400
+        reported_at = datetime.datetime.now()
+        cursor.execute("INSERT INTO reported_urls (url, prediction, probability, reported_at, username) VALUES (%s, %s, %s, %s, %s)",
+                       (url, prediction, probability, reported_at, username))
+        db.commit()
+        return jsonify({"message": "URL reported"}), 201
+    except mysql.connector.Error as db_err:
+        print(f"Database error during report: {str(db_err)}")
+        return jsonify({"message": "Database error during report"}), 500
+    except Exception as e:
+        print(f"Error during report: {str(e)}")
+        return jsonify({"message": "Internal server error"}), 500
 
-# View Reported URLs
+# View All Reported URLs
 @app.route('/urls', methods=['GET'])
 def get_urls():
     cursor.execute("SELECT * FROM reported_urls")
     rows = cursor.fetchall()
-    urls = [{"id": row[0], "url": row[1], "prediction": row[2], "probability": row[3], "reported_at": row[4].isoformat()} for row in rows]
+    urls = [{"id": row[0], "url": row[1], "prediction": row[2], "probability": row[3], "reported_at": row[4].isoformat(), "username": row[5]} for row in rows]
+    return jsonify(urls), 200
+
+# View User-Specific Reported URLs
+@app.route('/user_urls/<username>', methods=['GET'])
+def get_user_urls(username):
+    cursor.execute("SELECT * FROM reported_urls WHERE username = %s", (username,))
+    rows = cursor.fetchall()
+    urls = [{"id": row[0], "url": row[1], "prediction": row[2], "probability": row[3], "reported_at": row[4].isoformat(), "username": row[5]} for row in rows]
     return jsonify(urls), 200
 
 if __name__ == '__main__':
