@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -21,9 +22,15 @@ spec:
             - name: MYSQL_HOST
               value: "phishing-mysql"
             - name: MYSQL_USER
-              value: "root"
+              valueFrom:
+                secretKeyRef:
+                  name: phishing-mysql-secret
+                  key: mysql-user
             - name: MYSQL_PASSWORD
-              value: "root"
+              valueFrom:
+                secretKeyRef:
+                  name: phishing-mysql-secret
+                  key: mysql-root-password
             - name: MYSQL_DATABASE
               value: "phishing_db"
           resources:
@@ -62,4 +69,4 @@ spec:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: 50
+        averageUtilization: 30

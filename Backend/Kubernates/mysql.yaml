@@ -22,6 +22,15 @@ spec:
     requests:
       storage: 1Gi
 ---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: phishing-mysql-secret
+type: Opaque
+data:
+  mysql-root-password: cm9vdA==  # Base64-encoded "root"
+  mysql-user: cm9vdA==          # Base64-encoded "root"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -41,14 +50,23 @@ spec:
           image: mysql:8
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: root
+              valueFrom:
+                secretKeyRef:
+                  name: phishing-mysql-secret
+                  key: mysql-root-password
           ports:
             - containerPort: 3306
           volumeMounts:
             - name: phishing-mysql-storage
               mountPath: /var/lib/mysql
-          # Updated database and table creation with username column
           command: ['sh', '-c', 'echo "CREATE DATABASE IF NOT EXISTS phishing_db; USE phishing_db; CREATE TABLE IF NOT EXISTS users (username VARCHAR(255) PRIMARY KEY, password VARCHAR(255), email VARCHAR(255)); CREATE TABLE IF NOT EXISTS reported_urls (id INT AUTO_INCREMENT PRIMARY KEY, url VARCHAR(255), prediction VARCHAR(50), probability FLOAT, reported_at DATETIME, username VARCHAR(255), FOREIGN KEY (username) REFERENCES users(username));" > /docker-entrypoint-initdb.d/init.sql && exec docker-entrypoint.sh mysqld']
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
       volumes:
         - name: phishing-mysql-storage
           persistentVolumeClaim:
@@ -64,3 +82,22 @@ spec:
       targetPort: 3306
   selector:
     app: phishing-mysql
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: phishing-mysql-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: phishing-mysql
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
