@@ -1,6 +1,4 @@
 #!/bin/bash
-minikube status
-minikube start --cpus=4 --memory=4096 --driver=docker
 kubectl apply -f {{ manifests_dir }}/mysql.yaml
 kubectl apply -f {{ manifests_dir }}/model-service.yaml
 kubectl apply -f {{ manifests_dir }}/middleware.yaml
