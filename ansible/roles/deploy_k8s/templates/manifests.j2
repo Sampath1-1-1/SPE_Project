@@ -1,0 +1,8 @@
+#!/bin/bash
+kubectl apply -f {{ manifests_dir }}/mysql.yaml
+kubectl apply -f {{ manifests_dir }}/model-service.yaml
+kubectl apply -f {{ manifests_dir }}/middleware.yaml
+kubectl apply -f {{ manifests_dir }}/frontend.yaml
+kubectl apply -f {{ manifests_dir }}/elasticsearch.yaml
+kubectl apply -f {{ manifests_dir }}/kibana.yaml
+kubectl apply -f {{ manifests_dir }}/logstash.yaml

@@ -1,0 +1,5 @@
+- name: Deploy application to Kubernetes
+  hosts: localhost
+  connection: local
+  roles:
+    - deploy_k8s
