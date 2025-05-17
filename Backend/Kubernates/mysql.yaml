@@ -22,15 +22,6 @@ spec:
     requests:
       storage: 1Gi
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: phishing-mysql-secret
-type: Opaque
-data:
-  mysql-root-password: cm9vdA==  # Base64-encoded "root"
-  mysql-user: cm9vdA==          # Base64-encoded "root"
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:

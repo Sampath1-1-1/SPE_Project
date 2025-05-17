@@ -1,4 +1,5 @@
 #!/bin/bash
+kubectl apply -f {{ manifests_dir }}/mysql-secret.yaml
 kubectl apply -f {{ manifests_dir }}/mysql.yaml
 kubectl apply -f {{ manifests_dir }}/model-service.yaml
 kubectl apply -f {{ manifests_dir }}/middleware.yaml
