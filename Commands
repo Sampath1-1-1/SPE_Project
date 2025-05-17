@@ -1,0 +1,36 @@
+hey -n 50000 -c 500 -m GET http://192.168.49.2:30006  to test frontend pod 
+hey -n 50000 -c 500 -m POST http://192.168.49.2:30006/api/report -d '{"url":"http://example.com"}' -T "application/json"  to test middleware
+kubectl get hpa -n default -w          to check the resource utilixation
+
+kubectl port-forward svc/model-service 5000:5000  
+hey -n 50000 -c 500 -m POST http://localhost:5000/predict -d '{"url":"http://example.com"}' -H "Content-Type: application/json"  to test model-service
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Create .kube directory for Jenkins user
+sudo mkdir -p /var/lib/jenkins/.kube
+
+# Copy Minikube’s kubeconfig to Jenkins
+sudo cp ~/.kube/config /var/lib/jenkins/.kube/config
+
+# Set correct ownership
+sudo chown -R jenkins:jenkins /var/lib/jenkins/.kube
+
+# Test kubectl access from Jenkins user
+sudo -u jenkins kubectl cluster-info
