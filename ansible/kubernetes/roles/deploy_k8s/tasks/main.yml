@@ -1,10 +1,10 @@
----
 - name: Copy Kubernetes manifests deployment script
-  template:
+  ansible.builtin.template:
     src: manifests.j2
     dest: /tmp/deploy_manifests.sh
     mode: '0755'
+
 - name: Deploy Kubernetes manifests
-  command: /tmp/deploy_manifests.sh
+  ansible.builtin.command: /tmp/deploy_manifests.sh
   become: yes
   become_user: jenkins

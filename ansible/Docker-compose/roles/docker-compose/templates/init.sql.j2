@@ -1,0 +1,16 @@
+CREATE DATABASE IF NOT EXISTS phishing_db;
+USE phishing_db;
+CREATE TABLE IF NOT EXISTS users (
+  username VARCHAR(255) PRIMARY KEY,
+  password VARCHAR(255),
+  email VARCHAR(255)
+);
+CREATE TABLE IF NOT EXISTS reported_urls (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  url VARCHAR(255),
+  prediction VARCHAR(50),
+  probability FLOAT,
+  reported_at DATETIME,
+  username VARCHAR(255),
+  FOREIGN KEY (username) REFERENCES users(username)
+);

@@ -1,0 +1,3 @@
+---
+source_compose_dir: "{{ playbook_dir }}/../../Docker-Compose"
+deploy_dir: "{{ playbook_dir }}/deploy"

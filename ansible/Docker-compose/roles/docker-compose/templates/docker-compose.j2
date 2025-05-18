@@ -1,0 +1,138 @@
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.8.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    mem_limit: 1g
+    cpus: 1.0
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.8.0
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail localhost:5601/api/status || exit 1"]
+      interval: 30s
+      timeout: 60s
+      retries: 10
+    mem_limit: 1g
+    cpus: 0.2
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.8.0
+    container_name: logstash
+    ports:
+      - "5044:5044"
+    volumes:
+      - {{ deploy_dir }}/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 9600 || exit 1"]
+      interval: 30s
+      timeout: 30s
+      retries: 10
+    mem_limit: 1g
+    cpus: 0.2
+
+  mysql:
+    image: mysql:8
+    container_name: phishing-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=phishing_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - {{ deploy_dir }}/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    mem_limit: 512m
+    cpus: 0.5
+
+  middleware:
+    image: sampath333/middleware:latest
+    container_name: middleware
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+      - MYSQL_DATABASE=phishing_db
+    ports:
+      - "5001:5001"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      logstash:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 5001 || exit 1"]
+      interval: 30s
+      timeout: 30s
+      retries: 10
+    mem_limit: 512m
+    cpus: 0.2
+
+  model-service:
+    image: sampath333/model-service:latest
+    container_name: model-service
+    ports:
+      - "5000:5000"
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail http://localhost:5000 || exit 1"]
+      interval: 30s
+      timeout: 30s
+      retries: 10
+    mem_limit: 1g
+    cpus: 0.4
+
+  frontend:
+    image: sampath333/frontend:latest
+    container_name: frontend
+    environment:
+      - REACT_APP_API_URL=http://middleware:5001
+    ports:
+      - "3000:80"
+    depends_on:
+      middleware:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 80 || exit 1"]
+      interval: 30s
+      timeout: 30s
+      retries: 10
+    mem_limit: 512m
+    cpus: 0.2
+
+volumes:
+  elasticsearch_data:
+    driver: local
+  mysql_data:
+    driver: local
