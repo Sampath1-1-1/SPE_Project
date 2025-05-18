@@ -137,5 +137,28 @@ def get_user_urls(username):
     logger.info(f"Fetched {len(urls)} URLs for username: {username}")
     return jsonify(urls), 200
 
+# Handle Wrong Prediction Feedback
+@app.route('/wrong_prediction', methods=['POST'])
+def wrong_prediction():
+    try:
+        data = request.get_json()
+        url = data.get('url')
+        result = data.get('result')
+        probability = float(data.get('probability'))
+        logger.info(f"Wrong prediction reported for URL: {url}, result: {result}")
+        response = requests.post('http://model-service:5000/api/wrong_prediction', json={
+            'url': url,
+            'result': result,
+            'probability': probability,
+        })
+        if response.status_code == 200:
+            logger.info(f"Wrong prediction successfully forwarded for URL: {url}")
+            return jsonify({"message": "Feedback processed"}), 200
+        logger.error(f"Failed to process wrong prediction for URL: {url}")
+        return jsonify({"message": "Failed to process feedback"}), 500
+    except Exception as e:
+        logger.error(f"Error processing wrong prediction: {str(e)}")
+        return jsonify({"message": "Internal server error"}), 500
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)

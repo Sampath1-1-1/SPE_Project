@@ -913,8 +913,7 @@ def predict_url(url):
     
     x = pd.DataFrame([features], columns=feature_names)
     
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    MODEL_PATH = os.path.join(BASE_DIR, 'model.pkl')
+    MODEL_PATH = '/var/lib/mlService/ml-model/model.pkl'
     with open(MODEL_PATH, 'rb') as file:
         gbc = pickle.load(file)
     

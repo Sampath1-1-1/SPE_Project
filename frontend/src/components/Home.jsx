@@ -25,6 +25,28 @@ const Home = () => {
         }
     };
 
+    const handleWrongPrediction = async () => {
+        try {
+            const response = await fetch(`/api/wrong_prediction`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    url: prediction.url,
+                    result: prediction.result,
+                    probability: prediction.prediction.match(/[\d.]+/)[0],
+                }),
+            });
+            if (!response.ok) {
+                throw new Error('Failed to report wrong prediction');
+            }
+            alert('Feedback submitted successfully');
+        } catch (err) {
+            setError('Failed to submit feedback');
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col items-center p-4">
             <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-6">Check URL for Phishing</h1>
@@ -51,6 +73,9 @@ const Home = () => {
                         <p className="text-gray-800 dark:text-white"><strong>URL:</strong> {prediction.url}</p>
                         <p className="text-gray-800 dark:text-white"><strong>Prediction:</strong> {prediction.result}</p>
                         <p className="text-gray-800 dark:text-white"><strong>Probability:</strong> {prediction.prediction}</p>
+                        <button onClick={handleWrongPrediction} className="mt-4 bg-red-600 text-white p-2 rounded hover:bg-red-700">
+                            Wrong Predicted
+                        </button>
                     </div>
                 )}
             </div>
