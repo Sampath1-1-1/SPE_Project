@@ -20,36 +20,39 @@ pipeline {
             }
         }
 
-        // stage('Run Tests') {
-        //     agent {
-        //         docker {
-        //             image 'python:3.11.12-slim'
-        //             args '-u root'
-        //         }
-        //     }
-        //     steps {
-        //         echo 'Running automated tests...'
-        //         dir('Backend/Model-service') {
-        //             sh '''
-        //                 export PATH=$PATH:/root/.local/bin
-        //                 python3 -m pip install --user -r requirements.txt
-        //                 pip3 list | grep -i flask-cors || echo "flask-cors not found in pip list"
-        //                 python3 --version
-        //                 pytest --version || echo "pytest not found"
-        //             '''
-        //             sh 'ls -la | grep model.pkl'
-        //         }
-        //         dir('tests') {
-        //             sh 'pwd'
-        //             sh 'ls -la ../Backend/Model-service'
-        //             sh '''
-        //                 export PATH=$PATH:/root/.local/bin
-        //                 export PYTHONPATH=$PYTHONPATH:$(pwd)/../Backend/Model-service
-        //                 pytest test_app.py --verbose || { echo "Tests failed"; exit 1; }
-        //             '''
-        //         }
-        //     }
-        // }
+        stage('Run Tests') {
+            agent {
+                docker {
+                    image 'python:3.11.12-slim'
+                    args '-u root'
+                }
+            }
+            steps {
+                echo 'Running automated tests...'
+                dir('Backend/Model-service') {
+                    sh '''
+                        export PATH=$PATH:/root/.local/bin
+                        python3 -m pip install --user -r requirements.txt
+                        pip3 list | grep -i flask-cors || echo "flask-cors not found in pip list"
+                        python3 --version
+                        pytest --version || echo "pytest not found"
+                        # Create the directory and copy model.pkl to the expected location
+                        mkdir -p /var/lib/mlService/ml-model
+                        cp model.pkl /var/lib/mlService/ml-model/model.pkl
+                    '''
+                    sh 'ls -la | grep model.pkl'
+                }
+                dir('tests') {
+                    sh 'pwd'
+                    sh 'ls -la ../Backend/Model-service'
+                    sh '''
+                        export PATH=$PATH:/root/.local/bin
+                        export PYTHONPATH=$PYTHONPATH:$(pwd)/../Backend/Model-service
+                        pytest test_app.py --verbose || { echo "Tests failed"; exit 1; }
+                    '''
+                }
+            }
+        }
 
         stage('Clean Existing Docker Images') {
             agent {
