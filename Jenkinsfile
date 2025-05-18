@@ -133,28 +133,26 @@ pipeline {
         success {
             echo 'Pipeline completed successfully!'
             mail to: "${EMAIL_RECIPIENT}",
-                 subject: "✅ Jenkins Pipeline Success: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                 subject: "Jenkins Pipeline Success: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                  body: "The pipeline ${env.JOB_NAME} #${env.BUILD_NUMBER} completed successfully.\nCheck the build at ${env.BUILD_URL}"
         }
         failure {
             echo 'Pipeline failed!'
             mail to: "${EMAIL_RECIPIENT}",
-                 subject: "❌ Jenkins Pipeline Failure: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                 subject: "Jenkins Pipeline Failure: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                  body: "The pipeline ${env.JOB_NAME} #${env.BUILD_NUMBER} failed.\nCheck the build at ${env.BUILD_URL}"
         }
     }
 }
 
 
-
-
 // pipeline {
 //     agent any
 //     environment {
-//         DOCKERHUB_CREDENTIALS = credentials('DockerHubCred')
-//         DOCKERHUB_USERNAME = 'sampath333'
-//         GIT_REPO_URL = 'https://github.com/Sampath1-1-1/SPE_Project.git'
-//         EMAIL_RECIPIENT = 'sampathkumar1011c@gmail.com'
+//         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
+//         DOCKERHUB_USERNAME = 'aaradhyaghota'
+//         GIT_REPO_URL = 'https://github.com/Aaradhyaghota/Major_Project_spe.git'
+//         EMAIL_RECIPIENT = 'aaradhyaghota@gmail.com'
 //     }
 //     stages {
 //         stage('Checkout Code') {
