@@ -13,6 +13,7 @@ commands = [
     "kubectl apply -f /home/aaradhya-ghota/SoftwareProduction/Major_Project_spe/Backend/Kubernates/middleware.yaml"
 ]
 
+
 for cmd in commands:
     print(f"\nRunning: {cmd}")
     os.system(cmd)
