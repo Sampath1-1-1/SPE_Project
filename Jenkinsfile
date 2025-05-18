@@ -1,7 +1,7 @@
 pipeline {
     agent none
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('DockerHubCred')
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
         DOCKERHUB_USERNAME = 'aaradhyaghota'
         GIT_REPO_URL = 'https://github.com/Aaradhyaghota/Major_Project_spe.git'
         EMAIL_RECIPIENT = 'aaradhyaghota@gmail.com'
