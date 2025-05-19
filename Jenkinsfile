@@ -117,7 +117,7 @@ pipeline {
                     sh 'ls -la ../../Backend/Kubernates/'
                     sh '''
                         ansible-galaxy collection install kubernetes.core
-                        ansible-playbook -i inventory.yml deploy.yml --vault-password-file vault-pass.txt
+                        ansible-playbook -i inventory.yml deploy.yml --vault-password-file vault_pass.txt
                     '''
                 }
             }
