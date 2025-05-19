@@ -116,7 +116,9 @@ pipeline {
                     echo 'Listing Backend/Kubernates directory contents...'
                     sh 'ls -la ../../Backend/Kubernates/'
                     sh '''
-                        ansible-playbook -i inventory.yml deploy.yml
+                        ansible-galaxy collection install kubernetes.core
+                        pip3 install kubernetes
+                        ansible-playbook -i inventory.yml deploy.yml --vault-password-file vault-pass.txt
                     '''
                 }
             }
