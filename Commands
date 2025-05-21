@@ -22,7 +22,6 @@ hey -n 50000 -c 500 -m POST http://localhost:5000/predict -d '{"url":"http://exa
 
 
 
-
 # Create .kube directory for Jenkins user
 sudo mkdir -p /var/lib/jenkins/.kube
 
