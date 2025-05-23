@@ -1,5 +1,8 @@
 pipeline {
     agent none
+    triggers {
+          githubPush()
+    }
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
         DOCKERHUB_USERNAME = 'aaradhyaghota'
@@ -8,12 +11,13 @@ pipeline {
     }
     stages {
         stage('Checkout Code') {
-            agent {
-                docker {
-                    image 'python:3.11.12-slim'
-                    args '-u root'
-                }
-            }
+            // agent {
+            //     docker {
+            //         image 'python:3.11.12-slim'
+            //         args '-u root'
+            //     }
+            // }
+            agent any
             steps {
                 echo 'Checking out code from GitHub...'
                 git url: "${GIT_REPO_URL}", branch: 'main'
@@ -55,12 +59,13 @@ pipeline {
         }
 
         stage('Clean Existing Docker Images') {
-            agent {
-                docker {
-                    image 'docker:20.10'
-                    args '-v /var/run/docker.sock:/var/run/docker.sock -u root'
-                }
-            }
+            // agent {
+            //     docker {
+            //         image 'docker:20.10'
+            //         args '-v /var/run/docker.sock:/var/run/docker.sock -u root'
+            //     }
+            // }
+            agent any
             steps {
                 echo 'Removing existing Docker images if they exist...'
                 sh '''
@@ -72,12 +77,13 @@ pipeline {
         }
 
         stage('Build and Push Docker Images') {
-            agent {
-                docker {
-                    image 'docker:20.10'
-                    args '-v /var/run/docker.sock:/var/run/docker.sock -u root'
-                }
-            }
+            // agent {
+            //     docker {
+            //         image 'docker:20.10'
+            //         args '-v /var/run/docker.sock:/var/run/docker.sock -u root'
+            //     }
+            // }
+            agent any
             steps {
                 echo 'Building Docker images...'
                 echo 'Listing frontend directory contents...'
