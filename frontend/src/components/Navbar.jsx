@@ -12,28 +12,41 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="bg-blue-600 dark:bg-gray-800 p-4 shadow-md">
+        <nav className="bg-blue-900 dark:bg-gray-900 p-4 shadow-lg sticky top-0 z-50">
             <div className="container mx-auto flex justify-between items-center">
-                <Link to="/" className="text-white text-xl font-bold">Phishing Detection</Link>
-                <div className="flex space-x-4 items-center">
-                    <Link to="/" className="text-white hover:text-gray-200">Home</Link>
-                    <Link to="/report" className="text-white hover:text-gray-200">Report</Link>
-                    <Link to="/reports" className="text-white hover:text-gray-200">See All Reports</Link>
+                <Link to="/" className="text-white text-2xl font-bold flex items-center space-x-2">
+                    <span className="text-3xl">🛡️</span>
+                    <span>Phishing Guard</span>
+                </Link>
+                <div className="flex space-x-6 items-center">
+                    <Link to="/" className="text-white font-medium hover:text-blue-200 transition duration-300">Home</Link>
+                    <Link to="/report" className="text-white font-medium hover:text-blue-200 transition duration-300">Report</Link>
+                    <Link to="/reports" className="text-white font-medium hover:text-blue-200 transition duration-300">All Reports</Link>
                     <button
                         onClick={() => setDarkMode(!darkMode)}
-                        className="text-white hover:text-gray-200"
+                        className="text-white font-medium hover:text-blue-200 transition duration-300 flex items-center space-x-1"
                     >
-                        {darkMode ? '☀️ Light' : '🌙 Dark'}
+                        {darkMode ? (
+                            <>
+                                <span>☀️</span>
+                                <span>Light</span>
+                            </>
+                        ) : (
+                            <>
+                                <span>🌙</span>
+                                <span>Dark</span>
+                            </>
+                        )}
                     </button>
                     {user ? (
                         <>
-                            <Link to="/dashboard" className="text-white hover:text-gray-200">Dashboard</Link>
-                            <button onClick={handleLogout} className="text-white hover:text-gray-200">Logout</button>
+                            <Link to="/dashboard" className="text-white font-medium hover:text-blue-200 transition duration-300">Dashboard</Link>
+                            <button onClick={handleLogout} className="text-white font-medium hover:text-blue-200 transition duration-300">Logout</button>
                         </>
                     ) : (
                         <>
-                            <Link to="/login" className="text-white hover:text-gray-200">Login</Link>
-                            <Link to="/signup" className="text-white hover:text-gray-200">Signup</Link>
+                            <Link to="/login" className="text-white font-medium hover:text-blue-200 transition duration-300">Login</Link>
+                            <Link to="/signup" className="text-white font-medium hover:text-blue-200 transition duration-300">Signup</Link>
                         </>
                     )}
                 </div>

@@ -31,31 +31,30 @@ const Report = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col items-center p-4">
-            <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-6">Report a URL</h1>
-            <div className="w-full max-w-md bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <div className="min-h-screen flex flex-col items-center justify-center p-6">
+            <h1 className="text-4xl font-extrabold text-blue-900 dark:text-white mb-8 text-center">Report a Suspicious URL</h1>            <div className="card w-full max-w-lg">
                 <form onSubmit={handleReport}>
                     <input
                         type="text"
                         value={url}
                         onChange={(e) => setUrl(e.target.value)}
-                        placeholder="Enter URL to report"
-                        className="w-full p-2 mb-4 border rounded dark:bg-gray-700 dark:text-white"
+                        placeholder="Enter URL to report (e.g., https://example.com)"
+                        className="input-field mb-4"
                     />
-                    {error && <p className="text-red-500 mb-4">{error}</p>}
+                    {error && <p className="text-red-500 mb-4 text-sm text-center">{error}</p>}
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 disabled:opacity-50"
+                        className="btn-primary w-full"
                     >
                         {loading ? 'Reporting...' : 'Report URL'}
                     </button>
                 </form>
                 {result && (
-                    <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded">
-                        <p className="text-gray-800 dark:text-white"><strong>URL:</strong> {result.url}</p>
-                        <p className="text-gray-800 dark:text-white"><strong>Prediction:</strong> {result.prediction}</p>
-                        <p className="text-gray-800 dark:text-white"><strong>Probability:</strong> {(result.probability * 100).toFixed(2)}%</p>
+                    <div className="mt-6 p-6 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <p className="text-gray-800 dark:text-white mb-2"><strong>URL:</strong> {result.url}</p>
+                        <p className="text-gray-800 dark:text-white mb-2"><strong>Prediction:</strong> {result.prediction}</p>
+                        <p className="text-gray-800 dark:text-white mb-4"><strong>Probability:</strong> {(result.probability * 100).toFixed(2)}%</p>
                     </div>
                 )}
             </div>

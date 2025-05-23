@@ -15,15 +15,19 @@ const App = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/report" element={<ProtectedRoute><Report /></ProtectedRoute>} />
-          <Route path="/reports" element={<ProtectedRoute><AllReportedUrls /></ProtectedRoute>} />
-          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-        </Routes>
+        <div className="flex flex-col min-h-screen">
+          <Navbar />
+          <main className="flex-grow">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/report" element={<ProtectedRoute><Report /></ProtectedRoute>} />
+              <Route path="/reports" element={<ProtectedRoute><AllReportedUrls /></ProtectedRoute>} />
+              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            </Routes>
+          </main>
+        </div>
       </AuthProvider>
     </BrowserRouter>
   );

@@ -15,11 +15,13 @@ const Home = () => {
         }
         setLoading(true);
         setError('');
+        setPrediction(null);
         try {
             const data = await predictUrl(url);
             setPrediction(data);
         } catch (err) {
             setError('Failed to get prediction');
+            setPrediction(null);
         } finally {
             setLoading(false);
         }
@@ -48,34 +50,43 @@ const Home = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col items-center p-4">
-            <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-6">Check URL for Phishing</h1>
-            <div className="w-full max-w-md bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <div className="min-h-screen flex flex-col items-center justify-center p-4">            <div className="text-center mb-8">
+            <h1 className="text-4xl md:text-5xl font-extrabold text-blue-900 dark:text-white mb-4">Phishing URL Detector</h1>
+            <p className="text-lg text-white dark:text-gray-300 max-w-2xl mx-auto">
+                Stay safe online by checking URLs for potential phishing threats with our advanced detection system.
+            </p>
+        </div>
+            <div className="card w-full max-w-xl">
                 <form onSubmit={handlePredict}>
                     <input
                         type="text"
                         value={url}
                         onChange={(e) => setUrl(e.target.value)}
                         placeholder="Enter URL (e.g., https://example.com)"
-                        className="w-full p-2 mb-4 border rounded dark:bg-gray-700 dark:text-white"
+                        className="input-field mb-4"
                     />
-                    {error && <p className="text-red-500 mb-4">{error}</p>}
+                    {error && <p className="text-red-500 mb-4 text-sm">{error}</p>}
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 disabled:opacity-50"
+                        className="btn-primary w-full"
                     >
                         {loading ? 'Checking...' : 'Check URL'}
                     </button>
                 </form>
                 {prediction && (
-                    <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded">
-                        <p className="text-gray-800 dark:text-white"><strong>URL:</strong> {prediction.url}</p>
-                        <p className="text-gray-800 dark:text-white"><strong>Prediction:</strong> {prediction.result}</p>
-                        <p className="text-gray-800 dark:text-white"><strong>Probability:</strong> {prediction.prediction}</p>
-                        <button onClick={handleWrongPrediction} className="mt-4 bg-red-600 text-white p-2 rounded hover:bg-red-700">
-                            Wrong Predicted
-                        </button>
+                    <div className="mt-6 p-6 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <p className="text-gray-800 dark:text-white mb-2"><strong>URL:</strong> {prediction.url}</p>
+                        <p className="text-gray-800 dark:text-white mb-2"><strong>Prediction:</strong> {prediction.result}</p>
+                        <p className="text-gray-800 dark:text-white mb-4"><strong>Probability:</strong> {prediction.prediction}</p>
+                        <div className="flex justify-evenly">
+                            <button onClick={handleWrongPrediction} className="btn-secondary">
+                                Report Wrong Prediction
+                            </button>
+                            <button className="btn-secondary bg-green-500 hover:bg-green-700">
+                                <a href={url}> Proceed</a>
+                            </button>
+                        </div>
                     </div>
                 )}
             </div>

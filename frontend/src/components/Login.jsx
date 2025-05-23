@@ -22,32 +22,35 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
-            <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-md">
-                <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Login</h2>
+        <div className="min-h-screen flex items-center justify-center p-4">
+            <div className="card w-full max-w-md">
+                <h2 className="text-3xl font-bold text-blue-900 dark:text-white mb-6 text-center">Welcome Back</h2>
                 <form onSubmit={handleSubmit}>
                     <input
                         type="text"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         placeholder="Username"
-                        className="w-full p-2 mb-4 border rounded dark:bg-gray-700 dark:text-white"
+                        className="input-field mb-4"
                     />
                     <input
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Password"
-                        className="w-full p-2 mb-4 border rounded dark:bg-gray-700 dark:text-white"
+                        className="input-field mb-4"
                     />
-                    {error && <p className="text-red-500 mb-4">{error}</p>}
+                    {error && <p className="text-red-500 mb-4 text-sm text-center">{error}</p>}
                     <button
                         type="submit"
-                        className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+                        className="btn-primary w-full"
                     >
                         Login
                     </button>
                 </form>
+                <p className="text-gray-600 dark:text-gray-300 mt-4 text-center">
+                    Don't have an account? <a href="/signup" className="text-blue-600 hover:underline dark:text-blue-400">Sign up</a>
+                </p>
             </div>
         </div>
     );
