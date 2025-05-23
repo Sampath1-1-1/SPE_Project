@@ -8,12 +8,12 @@ pipeline {
     }
     stages {
         stage('Checkout Code') {
-            // agent {
-            //     docker {
-            //         image 'python:3.11.12-slim'
-            //         args '-u root'
-            //     }
-            // }
+            agent {
+                docker {
+                    image 'python:3.11.12-slim'
+                    args '-u root'
+                }
+            }
             steps {
                 echo 'Checking out code from GitHub...'
                 git url: "${GIT_REPO_URL}", branch: 'main'
