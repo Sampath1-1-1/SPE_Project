@@ -131,12 +131,12 @@ pipeline {
                 echo 'Deploying to Kubernetes using Ansible...'
                 dir('ansible/kubernetes') {
                     script {
-                        // Check for required files
+                        
                         // if (!fileExists('inventory.yml') || !fileExists('deploy.yml')) {
                         //     error "Error: inventory.yml or deploy.yml not found"
                         // }
 
-                        // Ensure kubernetes.core collection is installed
+                        
                         // sh '''
                         //     if ! ansible-galaxy collection list kubernetes.core >/dev/null 2>&1; then
                         //         echo "Installing kubernetes.core collection..."
@@ -144,12 +144,12 @@ pipeline {
                         //     fi
                         // '''
 
-                        // Run the Ansible playbook using the plugin
+                        
                         ansiblePlaybook(
                             playbook: 'deploy.yml',
                             inventory: 'inventory.yml',
                             vaultCredentialsId: 'ansible-vault-password',
-                            extras: '--verbose' // Optional: for more detailed output
+                            extras: '--verbose' 
                         )
                     }
                 }
