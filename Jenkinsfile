@@ -4,10 +4,10 @@ pipeline {
           githubPush()
     }
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
-        DOCKERHUB_USERNAME = 'aaradhyaghota'
-        GIT_REPO_URL = 'https://github.com/Aaradhyaghota/Major_Project_spe.git'
-        EMAIL_RECIPIENT = 'aaradhyaghota@gmail.com'
+        DOCKERHUB_CREDENTIALS = credentials('DockerHubCred')
+        DOCKERHUB_USERNAME = 'sampath333'
+        GIT_REPO_URL = 'https://github.com/Sampath1-1-1/SPE_Project.git'
+        EMAIL_RECIPIENT = 'sampathkumar1011c@gmail.com'
     }
     stages {
         stage('Checkout Code') {
