@@ -38,7 +38,7 @@ spec:
     spec:
       containers:
         - name: model-service
-          image: aaradhyaghota/model-service:latest
+          image: sampath333/model-service:latest
           ports:
             - containerPort: 5000
           resources:

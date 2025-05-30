@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: middleware
-          image: aaradhyaghota/middleware:latest
+          image: sampath333/middleware:latest
           ports:
             - containerPort: 5001
           env:
