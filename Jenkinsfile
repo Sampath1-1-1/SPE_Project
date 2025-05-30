@@ -1,7 +1,7 @@
 pipeline {
     agent none
     triggers {
-        githubPush()
+          githubPush()
     }
     environment {
         DOCKERHUB_CREDENTIALS = credentials('DockerHubCred')
@@ -11,6 +11,12 @@ pipeline {
     }
     stages {
         stage('Checkout Code') {
+            // agent {
+            //     docker {
+            //         image 'python:3.11.12-slim'
+            //         args '-u root'
+            //     }
+            // }
             agent any
             steps {
                 echo 'Checking out code from GitHub...'
@@ -34,6 +40,7 @@ pipeline {
                         pip3 list | grep -i flask-cors || echo "flask-cors not found in pip list"
                         python3 --version
                         pytest --version || echo "pytest not found"
+                        # Create the directory and copy model.pkl to the expected location
                         mkdir -p /var/lib/mlService/ml-model
                         cp model.pkl /var/lib/mlService/ml-model/model.pkl
                     '''
@@ -52,6 +59,12 @@ pipeline {
         }
 
         stage('Clean Existing Docker Images') {
+            // agent {
+            //     docker {
+            //         image 'docker:20.10'
+            //         args '-v /var/run/docker.sock:/var/run/docker.sock -u root'
+            //     }
+            // }
             agent any
             steps {
                 echo 'Removing existing Docker images if they exist...'
@@ -64,10 +77,15 @@ pipeline {
         }
 
         stage('Build and Push Docker Images') {
+            // agent {
+            //     docker {
+            //         image 'docker:20.10'
+            //         args '-v /var/run/docker.sock:/var/run/docker.sock -u root'
+            //     }
+            // }
             agent any
             steps {
                 echo 'Building Docker images...'
-
                 echo 'Listing frontend directory contents...'
                 dir('frontend') {
                     sh 'ls -la'
@@ -98,15 +116,40 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             agent any
+            // steps {
+            //     echo 'Deploying to Kubernetes using Ansible...'
+            //     dir('ansible/kubernetes') {
+            //         echo 'Listing Backend/Kubernates directory contents...'
+            //         sh 'ls -la ../../Backend/Kubernates/'
+            //         sh '''
+            //             ansible-galaxy collection install kubernetes.core
+            //             ansible-playbook -i inventory.yml deploy.yml --vault-password-file vault_pass.txt
+            //         '''
+            //     }
+            // }
             steps {
                 echo 'Deploying to Kubernetes using Ansible...'
                 dir('ansible/kubernetes') {
                     script {
+                        
+                        // if (!fileExists('inventory.yml') || !fileExists('deploy.yml')) {
+                        //     error "Error: inventory.yml or deploy.yml not found"
+                        // }
+
+                        
+                        // sh '''
+                        //     if ! ansible-galaxy collection list kubernetes.core >/dev/null 2>&1; then
+                        //         echo "Installing kubernetes.core collection..."
+                        //         ansible-galaxy collection install kubernetes.core
+                        //     fi
+                        // '''
+
+                        
                         ansiblePlaybook(
                             playbook: 'deploy.yml',
                             inventory: 'inventory.yml',
-                            // Removed vaultCredentialsId
-                            extras: '--vault-password-file /home/sampathkumar/Desktop/SPE-PROJECT/Major_Project_spe/ansible/kubernetes/vault_pass.txt --verbose'
+                            vaultCredentialsId: 'ansible-vault-password',
+                            extras: '--verbose' 
                         )
                     }
                 }
