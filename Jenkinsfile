@@ -145,12 +145,7 @@ pipeline {
                         // '''
 
                         
-                        ansiblePlaybook(
-                            playbook: 'deploy.yml',
-                            inventory: 'inventory.yml',
-                            vaultCredentialsId: 'ansible-vault-password',
-                            extras: '--verbose' 
-                        )
+                        ansible-playbook deploy.yml -i inventory.yml --vault-password-file /home/sampathkumar/Desktop/SPE-PROJECT/Major_Project_spe/ansible/kubernetes/vault_pass.txt --verbose
                     }
                 }
             }
